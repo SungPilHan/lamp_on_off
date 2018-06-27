@@ -3,16 +3,16 @@ NOLAMP = 5
 
 class Lamp:
     def __init__(self):
-        self.state = 0
+        self.state = False
 
     def getState(self):
         return self.state
 
     def turnOn(self):
-        self.state = 1
+        self.state = True
 
     def turnOff(self):
-        self.state = 0
+        self.state = False
 
 class Interface(tk.Tk):
     def __init__(self):
@@ -40,10 +40,9 @@ class Interface(tk.Tk):
         self.setCloseValue = True
         self.protocol("WM_DELETE_WINDOW", self.setClose)
 
-    def userInput(self, event=None):
+    def userInput(self, event):
         self.inputValue = event.char
         print("push: "+self.inputValue)
-        return
 
     def drawLamp(self, lamps):
         if lamps == None:
@@ -54,14 +53,14 @@ class Interface(tk.Tk):
                 del label
 
             for lamp in lamps:
-                if lamp.getState() == 0:
-                    turnOfflabel = tk.Label(image=self.turnOffimage)
-                    turnOfflabel.pack(side=tk.LEFT)
-                    self.labels.append(turnOfflabel)
-                else:
+                if lamp.getState():
                     turnOnlabel = tk.Label(image=self.turnOnimage)
                     turnOnlabel.pack(side=tk.LEFT)
                     self.labels.append(turnOnlabel)
+                else:
+                    turnOfflabel = tk.Label(image=self.turnOffimage)
+                    turnOfflabel.pack(side=tk.LEFT)
+                    self.labels.append(turnOfflabel)
 
             self.update()
 
@@ -78,7 +77,7 @@ class Interface(tk.Tk):
         return self.setCloseValue
 
 class Controller:
-    def __init__(self, lamps=None, inter=None):
+    def __init__(self, lamps, inter):
         self.lamps = lamps
         self.interface = inter
 
@@ -86,11 +85,11 @@ class Controller:
         choice = self.interface.getInput()
         if choice == None:
             return None
-        elif self.lamps[int(choice)-1].getState() == 0:
-            self.lamps[int(choice)-1].turnOn()
+        elif self.lamps[int(choice)-1].getState():
+            self.lamps[int(choice)-1].turnOff()
             self.interface.resetInput()
         else:
-            self.lamps[int(choice)-1].turnOff()
+            self.lamps[int(choice)-1].turnOn()
             self.interface.resetInput()
 
         for i in range(0, NOLAMP):
