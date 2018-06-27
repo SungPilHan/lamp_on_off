@@ -22,12 +22,14 @@ class Todo(tk.Tk):
         self.task_create.pack(side=tk.BOTTOM, fill=tk.X)
         self.task_create.focus_set()
 
-        self.bind("<Return>", self.add_task)
+        self.bind("1", self.add_task)
 
         self.colour_schemes = [{"bg": "lightgrey", "fg": "black"}, {"bg":"grey", "fg": "white"}]
 
     def add_task(self, event=None):
         task_text = self.task_create.get(1.0, tk.END).strip()
+        print(event.char)
+        print(type(event.char))
 
         if task_text == "-1":
             for task in self.tasks:
@@ -52,7 +54,8 @@ class Todo(tk.Tk):
 
         self.task_create.delete(1.0, tk.END)
 
+        self.update()
+
 
 if __name__=="__main__":
     root = Todo()
-    root.mainloop()
